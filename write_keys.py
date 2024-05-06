@@ -22,12 +22,13 @@ def write_keys(hosts, ports):
             else:
                 rc = redis.Redis(host=hosts[2], port=ports[2], decode_responses=True)
                 rc.set(key, f'value{i}')
-            print("Keys written successfully.")
+            print(key, f'value{i}')
         except redis.exceptions.ResponseError as e:
             # If MOVED response received, reconnect to the correct Redis instance
             new_host, new_port = str(e).split()[2].split(':')
             rc = redis.Redis(host=new_host, port=int(new_port), decode_responses=True)
             rc.set(key, f'value{i}')
+    print("Keys written successfully.")
 
     
 
