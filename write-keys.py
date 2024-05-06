@@ -3,7 +3,7 @@ import hashlib
 
 def write_keys(hosts, ports):
     # Connect to the Redis cluster
-    rc = redis.Redis(host=hosts[0], port=6379, decode_responses=True)
+    rc = redis.Redis(host=hosts[0], port=ports[0], decode_responses=True)
 
     # Function to calculate the slot for a given key
     def calculate_slot(key):
@@ -17,10 +17,10 @@ def write_keys(hosts, ports):
             if slot < 5461:  # Each master will handle roughly 1/3rd of the keys
                 rc.set(key, f'value{i}')
             elif slot < 10922:
-                rc = redis.Redis(host=hosts[1], port=6380, decode_responses=True)
+                rc = redis.Redis(host=hosts[1], port=ports[1], decode_responses=True)
                 rc.set(key, f'value{i}')
             else:
-                rc = redis.Redis(host=hosts[2], port=6381, decode_responses=True)
+                rc = redis.Redis(host=hosts[2], port=ports[2], decode_responses=True)
                 rc.set(key, f'value{i}')
             print("Keys written successfully.")
         except redis.exceptions.ResponseError as e:
