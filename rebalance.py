@@ -1,5 +1,5 @@
 # Rebalance the cluster
 import subprocess
-result = subprocess.run(['redis-cli', '--cluster', 'rebalance', '127.0.0.1:6382', '--cluster-use-empty-masters'], capture_output=True, text=True)
-
-print(result.stdout)
+def rebalance_cluster(new_host, port):
+    result = subprocess.run(['redis-cli', '--cluster', 'rebalance', f'{new_host}:{port}', '--cluster-use-empty-masters'], capture_output=True, text=True)
+    return result.stdout
