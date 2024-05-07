@@ -32,9 +32,9 @@ def main(nodes):
     result = add_master.add_master(nodes["node1"]["ip"],6379,nodes["node4"]["ip"],6379)
     print(f"{result}\n" )
 
+    sleep(10) #this wait is necessary. it doesn't show up in count otherwise.
     count(6)
 
-    sleep(10)
     print("7 > REBALANCE\n\n")
     result= rebalance.rebalance_cluster(nodes["node4"]["ip"], nodes["node4"]["port"])
     print(f"{result}\n" )
@@ -54,7 +54,7 @@ def main(nodes):
     print(f"{result}\n" )
 
     count(12)
-    
+
     print("13 > REMOVE 4TH NDOE\n\n")
     result= remove_master.remove_master(nodes["node4"]["ip"], nodes["node4"]["port"])
     print(f"{result}\n" )
