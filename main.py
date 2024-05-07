@@ -12,7 +12,6 @@ def count(step):
     print(f"{str(step)} > COUNT NODES\n\n{result}\n" )
 
 def main(nodes):
-
     result = create_cluster.create_cluster(nodes)
     print(f"1 > EMPTY CLUSTER OF THREE NODES\n\n{result}\n")
 
