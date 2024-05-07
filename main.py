@@ -1,38 +1,67 @@
-import subprocess
+import json
+from time import sleep
+import create_cluster
 import count_slot_key
 import write_keys
 import add_master
 import rebalance
-import rebalance_resharded
 import reshard
 import remove_master
 
-# List of IP addresses
-hosts = ["65.1.86.97", "3.110.148.234", "13.233.109.186", "13.234.231.230"]
-ports = [6379, 6379, 6379, 6379]
+def count(step):
+    print(f"{str(step)} > COUNT NODES\n\n")
+    result= count_slot_key.count_slot_key(nodes["node1"]["ip"], nodes["node1"]["port"])
+    print(f"{result}\n" )
 
-def call_python_file(file_path, hosts):
-    subprocess.run(["python", file_path, *hosts])
+def main(nodes):
+    print("1 > EMPTY CLUSTER OF THREE NODES\n\n")
+    result = create_cluster.create_cluster(nodes)
+    print(f"{result}\n")
 
-def main():
-    #result= count_slot_key.count_slot_key(hosts[0], 6379)
-    #print(result)
-    #result = write_keys.write_keys(hosts, ports)
-    #print(result)
-    #result= count_slot_key.count_slot_key(hosts[0], 6379)
-    #print(result)
-    #result = add_master.add_master(hosts[0],6379,hosts[3],6379)
-    #print(result)
-    #result= count_slot_key.count_slot_key(hosts[0], 6379)
-    #print(result)
-    result= rebalance.rebalance_cluster(hosts[3], 6379)
-    print(result)
-    result= count_slot_key.count_slot_key(hosts[0], 6379)
-    print(result)
-    #result= reshard.reshard(hosts[0], 6379)
-    #print(result)
+    sleep(10)
+    count(2)
+
+    #we need to wait for some time before writing keys otherwise cluster down error occurs
+    print(f"3 > WRITE KEYS\n\n")
+    result = write_keys.write_keys(nodes)
+    print(f"{result}\n")
+    
+    count(4)
+    
+    print("5 > ADD MASTER\n\n")
+    result = add_master.add_master(nodes["node1"]["ip"],6379,nodes["node4"]["ip"],6379)
+    print(f"{result}\n" )
+
+    sleep(10) #this wait is necessary. it doesn't show up in count otherwise.
+    count(6)
+
+    print("7 > REBALANCE\n\n")
+    result= rebalance.rebalance_cluster(nodes["node4"]["ip"], nodes["node4"]["port"])
+    print(f"{result}\n" )
+    
+    count(8)
+
+    sleep(15)
+    print("9> RESHARD\n\n")
+    result= reshard.reshard(nodes["node1"]["ip"], nodes["node1"]["port"], nodes["node4"]["ip"], nodes["node4"]["port"])
+    print(f"{result}\n" )
+    
+    count(10)
+
+    sleep(10)
+    print("11 > REBALANCE\n\n")
+    result= rebalance.rebalance_cluster(nodes["node4"]["ip"], nodes["node4"]["port"])
+    print(f"{result}\n" )
+
+    count(12)
+
+    print("13 > REMOVE 4TH NDOE\n\n")
+    result= remove_master.remove_master(nodes["node4"]["ip"], nodes["node4"]["port"])
+    print(f"{result}\n" )
+
+    count(14)
 
 
-if __name__ == "__main__":
-    main()
-
+file = open("./inventory.json")
+nodes = json.load(file)
+main(nodes)

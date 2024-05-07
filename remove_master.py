@@ -1,5 +1,6 @@
-import subprocess
+from subprocess import getoutput
 # Remove the 4th master
-def remove_master(host_to_remove, port):
-    result = subprocess.run(['redis-cli', '--cluster', 'del-node', f'{host_to_remove}:{port}'], capture_output=True, text=True)
-    return result.stdout
+def remove_master(node, port):
+    node_id = getoutput(f'redis-cli -h {node} -p {port} CLUSTER NODES | grep myself | cut -d" " -f1')
+    result = getoutput(f"redis-cli cluster forget {node_id}" )
+    return result

@@ -1,4 +1,4 @@
-import subprocess
-def count_slot_key(master_host, port):
-    result = subprocess.run(['redis-cli', '--cluster', 'check', f'{master_host}:{port}'], capture_output=True, text=True)
-    return result.stdout
+from subprocess import getoutput
+def count_slot_key(node, port):
+    result = getoutput(f"redis-cli --cluster check {node}:{str(port)} | grep slaves")
+    return result
