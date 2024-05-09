@@ -13,12 +13,19 @@ def count(step):
     result= count_slot_key.count_slot_key(nodes["node1"]["ip"], nodes["node1"]["port"])
     print(f"{result}\n" )
 
+def wait(seconds):
+    print(f"Waiting for {seconds} seconds...")
+    sleep(seconds)
+
 def main(nodes):
+    #console log time stamp and numner of keys tested with
+    # print waiting for 10 seconds
+    # operate with 3+1 node and n+1 nodes as well
     print("1 > EMPTY CLUSTER OF THREE NODES\n\n")
     result = create_cluster.create_cluster(nodes)
     print(f"{result}\n")
 
-    sleep(10)
+    wait(10)
     count(2)
 
     #we need to wait for some time before writing keys otherwise cluster down error occurs
@@ -32,7 +39,7 @@ def main(nodes):
     result = add_master.add_master(nodes["node1"]["ip"],6379,nodes["node4"]["ip"],6379)
     print(f"{result}\n" )
 
-    sleep(10) #this wait is necessary. it doesn't show up in count otherwise.
+    wait(10) #this wait is necessary. it doesn't show up in count otherwise.
     count(6)
 
     print("7 > REBALANCE\n\n")
@@ -41,14 +48,14 @@ def main(nodes):
     
     count(8)
 
-    sleep(15)
+    wait(15)
     print("9> RESHARD\n\n")
     result= reshard.reshard(nodes["node1"]["ip"], nodes["node1"]["port"], nodes["node4"]["ip"], nodes["node4"]["port"])
     print(f"{result}\n" )
     
     count(10)
 
-    sleep(10)
+    wait(15)
     print("11 > REBALANCE\n\n")
     result= rebalance.rebalance_cluster(nodes["node4"]["ip"], nodes["node4"]["port"])
     print(f"{result}\n" )
