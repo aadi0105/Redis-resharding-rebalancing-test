@@ -1,5 +1,5 @@
 import json
-from time import sleep
+from time import sleep, time
 import create_cluster
 import count_slot_key
 import write_keys
@@ -19,7 +19,8 @@ def wait(seconds):
 
 def main(nodes):
     #console log time stamp and numner of keys tested with
-    # print waiting for 10 seconds
+    t1 = time()
+    print(t1)
     # operate with 3+1 node and n+1 nodes as well
     print("1 > EMPTY CLUSTER OF THREE NODES\n\n")
     result = create_cluster.create_cluster(nodes)
@@ -67,6 +68,9 @@ def main(nodes):
     print(f"{result}\n" )
 
     count(14)
+    t2 = time()
+    print(t2)
+    print("Time Taken:", t2-t1)
 
 
 file = open("./inventory.json")
